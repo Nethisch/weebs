@@ -54,9 +54,11 @@
 
     $(document).ready(function(){
         $('#gridCont').hide()//pas page ke load, sembunyiin gridTable
+        var searcher = '',
+        searchData = '';
     })
 
-        Highcharts.chart('chartCont', {//init highchart di div chartCont
+    Highcharts.chart('chartCont', {//init highchart di div chartCont
             chart: {
                 type: 'pie',
                 events: {
@@ -85,6 +87,8 @@
                     drilldown: function(e){
                         //pas nge drilldown, ambil data baru lewat ajax
                         var chart = this
+                        searcher = e.point.drilldownSearcher
+                        searchData = e.point.drilldown
 
                             $.ajax({
                                 url: 'getData.php',       
@@ -95,7 +99,7 @@
                                     chart.showLoading()
                                 },
                                 success: function(ret){
-                                    
+
                                     if(ret.data[0].drilldown == undefined){
                                         console.log(e.point.drilldown)
                                         gridShow(e.point.drilldown)//buat gridTable muncul, tambahin parameter isi drilldown
@@ -229,7 +233,51 @@
                 {
                     type: "control"
                 }
-            ]
+            ],
+            onItemUpdated: function(args) {
+                var chart = $('#chartCont').highcharts()
+
+                $.ajax({
+                    url: 'getData.php',       
+                    type: "GET",
+                    data: {param: searcher+'-'+searchData},
+                    dataType: "json",
+                    beforeSend: function(e){    
+                        chart.showLoading()
+                    },
+                    success: function(ret){
+                        console.log(chart.series[0])
+                        chart.series[0].update({
+                            id: ret.id,                      
+                            name: ret.name,
+                            data: ret.data
+                        },true);
+                        chart.hideLoading()
+                    }
+                })
+            },
+            onItemInserted: function(args) {
+                var chart = $('#chartCont').highcharts()
+
+                $.ajax({
+                    url: 'getData.php',       
+                    type: "GET",
+                    data: {param: searcher+'-'+searchData},
+                    dataType: "json",
+                    beforeSend: function(e){    
+                        chart.showLoading()
+                    },
+                    success: function(ret){
+                        console.log(chart.series[0])
+                        chart.series[0].update({
+                            id: ret.id,                      
+                            name: ret.name,
+                            data: ret.data
+                        },true);
+                        chart.hideLoading()
+                    }
+                })
+            }
 
         })
 
