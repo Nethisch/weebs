@@ -42,6 +42,9 @@
 <div class="col-xl-12">
 
     <div class="row">
+        <a href="tools.php">Tools</a>
+    </div>
+    <div class="row">
         <div id="chartCont"></div>
     </div>
 

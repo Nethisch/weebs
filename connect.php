@@ -4,11 +4,13 @@ class Connect {
 
     public $pdo;
 
+    public $dbname;
+
     public function __construct(){
 
         // parent::__construct();
-
-        $dsn = 'mysql:host=localhost;dbname=testdb';//init host dan nama database
+        $dbname = 'testdb';
+        $dsn = 'mysql:host=localhost;dbname='.$dbname;//init host dan nama database
         $username = 'root';//init username
         $password = '';//init password
         $options = array(
@@ -20,6 +22,8 @@ class Connect {
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //biar bisa nge catch error
 
         $this->pdo = $conn; //masukin PDO ke property global
+
+        $this->dbname = $dbname;
     }
 
     public function getData($param = ''){
@@ -134,5 +138,27 @@ class Connect {
                 # code...
                 break;
         }
+    }
+
+    public function getTableColumnNames($param){
+
+        $pdo = $this->pdo;
+        $dbname = $this->dbname;
+
+        $query = "
+            SELECT `COLUMN_NAME` field
+            FROM `INFORMATION_SCHEMA`.`COLUMNS` 
+            WHERE `TABLE_SCHEMA`= ?
+                AND `TABLE_NAME`= ?
+        ";
+
+        $statement = $pdo->prepare($query);//prepare sql querynya
+
+        $statement->execute(array($dbname,$param));
+
+        $result = $statement->fetchAll();
+
+        return $result;
+
     }
 }
