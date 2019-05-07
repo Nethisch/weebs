@@ -42,8 +42,8 @@
                 success: function(ret){
                     ret = JSON.parse(ret)
                     
-                    var data
-
+                    var data = '';
+                    
                     $.each(ret, function(i,v){
                         data += '<option value="'+v+'">'+v.replace(/_/g,' ')+'</option>'
                     })

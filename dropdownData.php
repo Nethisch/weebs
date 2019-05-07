@@ -5,7 +5,7 @@ $param = $_GET['param']; //ambil parameter dari ajax di event chart drilldown
 
 $conn = new Connect(); //init connect
 
-$test = $conn->getTableColumnNames('sample_data');
+$test = $conn->getTableColumnNames($param);
 
 $data = array();
 
